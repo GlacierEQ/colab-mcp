@@ -1,0 +1,180 @@
+# Colab MCP — Portable Project Manifest
+schema: glaciereq.project-manifest.v1
+generated_at: "2026-11-20T06:45:00-10:00"
+source_authority: "estate_owner_graph.json (t_a4098ff2 strategy) + live git readback + DECISIONS.md (2026-11-18 Google Colab + colab-mcp global integration)"
+
+project:
+  key: colab-mcp
+  canonical_name: "colab-mcp"
+  canonical_owner: "GlacierEQ/colab-mcp"
+  role: "colab_connector"
+  tier: "SubsystemII"
+  purpose: "Google Colab MCP connector — first-class globally reachable capability on this Mac; Colab offload execution with session attach, notebook cells, quota management"
+  operator_intent: "Make Colab a first-class, globally reachable capability; repair defects found during verification"
+  runtime_entrypoint: "uv tool colab-mcp (stdio), colab-offload.py, colab-auto, colab-account CLI"
+  target_output: "Operational Colab offload: provision free-tier VM, run script, self-clean, zero paid compute units"
+  operational_users:
+    - "Casey (Operator)"
+    - "villaiage-workspace (MCP connector: mcp-unified.json colab-mcp)"
+    - "Any agent via MCP stdio"
+    - "colab-offload.py users"
+
+identity:
+  local_path: "/Users/kcbflux/workspace/projects/colab-mcp"
+  git_origin: "https://github.com/GlacierEQ/colab-mcp.git"
+  head_branch: "main"
+  head_sha: "b9ab389"  # from estate_owner_graph.md
+  last_commit: "2026-11-18 (measured, after global integration)"
+  version: "1.0.1"
+  commit_count: "unknown"
+  dirty_files: 0
+  branch_count: 1
+  worktrees: []
+  github:
+    visibility: "PRIVATE"
+    is_fork: false
+    is_archived: false
+    default_branch: "main"
+    updated_at: "2026-11-08T20:03:29Z"  # approximate
+    language: "Python"
+    description: ""
+  registry: null
+
+boundaries:
+  files:
+    - "colab_mcp/ (MCP server)"
+    - "scripts/ (colab_auto, colab-account, colab-offload.py, colab_quota.py)"
+    - "tests/"
+    - "pyproject.toml"
+    - "AGENTS.md"
+    - ".github/"
+  languages:
+    - "Python"
+    - "Markdown"
+    - "Shell"
+  packages:
+    - "colab_mcp"
+  dependency_interfaces:
+    - "mcp-unified.json colab-mcp entry (stdio, ColabMCP 2.14.5, uv tool colab-mcp 1.0.1)"
+    - "tools at rest: 1; tools_after_connect (session-gated): 6 notebook-cell tools"
+    - "requires_session: true for notebook tools"
+    - "stdio_timeout_seconds: 90 (override from default 15s)"
+    - "~/.config/colab-scheduler.json (accounts: primary only, secondary noted)"
+    - "~/.colab-cli-oauth-config-primary.json (OAuth config)"
+    - "Global PATH: /Users/kcbflux/Workspace/scripts (colab, colab-mcp, colab-auto, colab-account)"
+    - "~/.local/bin/colab-auto (global entry point)"
+  services:
+    - "Google Colab (free-tier VM provisioning)"
+    - "Google OAuth (authentication)"
+  secrets_references:
+    - "OAuth tokens in keyring (colab-cli-oauth-config-*)"
+    - "FAILFAST_UPSTREAM_TIMEOUT (env-overridable proxy budget)"
+  deploy_targets:
+    - "local Mac workstation"
+    - "MCP stdio (9 runtimes via sync_connectors.py)"
+    - "uv tool (colab-mcp 1.0.1)"
+  upstream_projects: []
+  downstream_projects:
+    - "villaiage-workspace (MCP connector)"
+    - "colab-offload.py users"
+
+lineage:
+  root_source_branch: "main"
+  forks: []
+  history_preserving_renames: []
+  archived_generations: []
+  predecessor_projects: []
+  generated_mirrors: []
+  unique_unmerged_work: []
+  all_branches:
+    - "main (HEAD)"
+  remotes:
+    - "origin"
+  ahead_behind: "unknown"
+  unpushed_commits: 0
+  unpulled_commits: 0
+
+state:
+  observed_working_features:
+    - "Global PATH: colab, colab-mcp, colab-auto, colab-account resolve in login zsh, non-interactive zsh, interactive zsh, bash login shells"
+    - "Defect 1 fixed: bash 3.2 \"$@\" under set -u (portable ${@+\"$@\"} form + shift guard)"
+    - "Defect 2 fixed: unauthenticated accounts stalled probes ~30s (stdin=DEVNULL, OAuth prompt as terminal state, 15s→20s budget, --timeout/--retries CLI)"
+    - "Defect 3 fixed: fail-fast proxy 502'd Google (proxy budget 2.0s→5.0s + connect retry; colab child env strips HTTP(S)_PROXY/ALL_PROXY)"
+    - "Defect 4 fixed: colab-mcp stdio timeout 15s → 90s (STDIO_DEFAULT_TIMEOUT + per-server override)"
+    - "Connector truth: mcp-unified.json records tools (at rest), tools_after_connect (session-gated), requires_session, stdio_timeout_seconds"
+    - "HEALTHY means server actually spoke MCP: colab-mcp -> HEALTHY | MCP initialize OK over stdio (ColabMCP 2.14.5)"
+    - "Mesh parity: python3 scripts/sync_connectors.py → all 9 runtimes SYNCHRONIZED"
+    - "End-to-end proof: python3 scripts/colab_offload.py hello_colab.py --account primary → fresh free-tier VM (run-b75813), SMOKE_OK in 59.6s, 0.00 compute units"
+    - "Kilo/opencode reach via universal-tools gateway (KILO_DIRECT_SERVERS, 128-tool-limit strategy)"
+  broken_features:
+    - "open_colab_browser_connection returns false/timeout unless signed-in Colab tab open in browser"
+    - "secondary account needs interactive Google consent (python3 scripts/colab_accounts.py add secondary)"
+  missing_dependencies: []
+  current_build_status: "operational (CLI offload lane fully operational and verified)"
+  outstanding_human_decisions:
+    - "Enable secondary account (interactive Google consent)"
+    - "Keep signed-in Colab tab open for open_colab_browser_connection"
+
+separation:
+  case_evidence_excluded: true
+  forensic_records_preserved: true
+
+architecture_contracts:
+  - "colab_mcp/ (MCP server, ColabMCP 2.14.5)"
+  - "scripts/colab_auto (global CLI, bash 3.2 compatible)"
+  - "scripts/colab_account (account management)"
+  - "scripts/colab_offload.py (offload execution, self-clean)"
+  - "scripts/colab_quota.py (quota probing)"
+  - "mcp-unified.json colab-mcp entry (stdio_timeout_seconds: 90, requires_session: true)"
+  - "~/.config/colab-scheduler.json (account config)"
+  - "connectors/servers/failfast_proxy.py (UPSTREAM_TIMEOUT 5.0s + connect retry)"
+  - "connectors/servers/universal_tools_mcp.py (STDIO_DEFAULT_TIMEOUT + per-server override)"
+
+handoff:
+  startup_instructions: |
+    1. Verify global PATH: `command -v colab-auto` → `/Users/kcbflux/Workspace/scripts/colab-auto`
+    2. Verify colab-mcp MCP: `python3 -c "import subprocess; subprocess.run(['~/.local/bin/colab-mcp'], capture_output=True)"` (or via sync_connectors.py)
+    3. Check account status: `colab-auto status` (expect primary state=free balance=0.0)
+    4. Run offload: `python3 scripts/colab_offload.py hello_colab.py --account primary` (expect SMOKE_OK in ~60s)
+    5. Verify mesh sync: `python3 scripts/sync_connectors.py` (expect 9/9 SYNCHRONIZED)
+  operator_instructions: |
+    - Role: First-class globally reachable Colab capability on this Mac
+    - CLI offload lane fully operational; browser session only needed for open_colab_browser_connection
+    - Primary account only in colab-scheduler.json (secondary needs OAuth consent)
+    - Fail-fast proxy budget 5.0s + 1 connect retry (env: FAILFAST_UPSTREAM_TIMEOUT)
+    - Colab traffic goes DIRECT (HTTP(S)_PROXY/ALL_PROXY stripped in colab_account and colab_offload.account_env)
+    - colab-mcp stdio_timeout_seconds: 90 (UI_CONNECTION_TIMEOUT up to 60s for signed-in tab)
+    - Mesh parity: all 9 runtimes SYNCHRONIZED via sync_connectors.py
+    - Kilo/opencode reach via universal-tools gateway (not direct)
+    - Stale MCP-server definition removed from Hermes secrets: hermes config unset secrets.colab-mcp
+  dependency_map:
+    imports:
+      - "colab_mcp (MCP server)"
+      - "google.colab (via uv tool colab-mcp)"
+    contracts:
+      - "mcp-unified.json colab-mcp entry"
+      - "~/.config/colab-scheduler.json"
+      - "stdio_timeout_seconds: 90"
+    entrypoints:
+      - "colab-auto (global CLI)"
+      - "colab-account (account management)"
+      - "colab-offload.py (offload execution)"
+      - "~/.local/bin/colab-mcp (MCP stdio)"
+  handoff_notes: |
+    - Four real defects found and fixed during verification (bash 3.2, unauth stalls, proxy 502, stdio timeout)
+    - Connector truth updated: tools at rest = 1, session-gated = 6, requires_session: true
+    - Proxy restarted via launchctl kickstart after fix
+    - Stale Hermes secrets entry removed (backup at ~/.hermes/config.yaml.bak-colab-global-20261117235135)
+    - Remaining human steps: signed-in Colab tab for browser connection, secondary account OAuth consent
+
+verification_receipts:
+  - "estate_owner_graph.json (t_a4098ff2 strategy) — canonical owner with measured head"
+  - "DECISIONS.md 2026-11-18 — 4 defects fixed, end-to-end proof (SMOKE_OK in 59.6s, 0.00 compute units)"
+  - "sync_connectors.py — 9/9 runtimes SYNCHRONIZED"
+  - "colab-mcp MCP initialize OK over stdio (ColabMCP 2.14.5)"
+
+status: "deployed_verified"
+remaining_work:
+  - "Enable secondary account (interactive Google consent)"
+  - "Maintain signed-in Colab tab for open_colab_browser_connection"
+  - "Monitor fail-fast proxy health"
